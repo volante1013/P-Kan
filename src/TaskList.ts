@@ -3,9 +3,8 @@ import Task from "./Task";
 export default class TaskList {
 	public ListId: number;
 	public Tasks: Task[] = [];
-	public constructor(id: number, task: Task) {
+	public constructor(id: number) {
 		this.ListId = id;
-		this.AddTask(task);
 	}
 
 	public AddTask(task: Task): void {
