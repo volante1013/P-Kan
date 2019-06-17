@@ -1,5 +1,20 @@
 <template>
-	<div id="draggable"></div>
+	<div id="draggable">
+		<draggable class="list-group" group="taskList" animation="150" :list="taskLists">
+			<div v-for="list in taskLists" :key="list.ListId">
+				<div class="header" slot="header">
+					<div>{{ list.ListId }}</div>
+					<button @click="addList">+</button>
+				</div>
+
+				<draggable group="task" animation="150" :list="list.Tasks">
+					<div v-for="task in list.Tasks" :key="task.id" @click="showTask(task)">{{ task.title }}</div>
+				</draggable>
+
+				<button slot="footer" @click="addTask(list.ListId)">Add</button>
+			</div>
+		</draggable>
+	</div>
 </template>
 
 <script lang="ts">
@@ -43,8 +58,17 @@
 
 			taskList[0].AddTask(new Task('Untitled', 'Uncontented'));
 		}
+
+		private showTask(task: Task): void {
+			console.log(`${task.title}: ${task.content}`);
+		}
 	}
 </script>
 
-<style>
+<style scoped>
+	.header,
+	.list-group {
+		display: flex;
+		justify-content: center;
+	}
 </style>
