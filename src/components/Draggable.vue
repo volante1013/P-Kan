@@ -4,14 +4,14 @@
 			<div v-for="list in taskLists" :key="list.ListId">
 				<div class="header" slot="header">
 					<div>{{ list.ListId }}</div>
-					<button @click="addList">+</button>
+					<b-button @click="addList">+</b-button>
 				</div>
 
 				<draggable group="task" animation="150" :list="list.Tasks">
 					<div v-for="task in list.Tasks" :key="task.id" @click="showTask(task)">{{ task.title }}</div>
 				</draggable>
 
-				<button slot="footer" @click="addTask(list.ListId)">Add</button>
+				<b-button slot="footer" @click="addTask(list.ListId)">Add</b-button>
 			</div>
 		</draggable>
 	</div>

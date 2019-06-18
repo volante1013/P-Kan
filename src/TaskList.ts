@@ -8,10 +8,9 @@ export default class TaskList {
 	}
 
 	public AddTask(task: Task): void {
-		if(this.Tasks.length <= 0){
+		if (this.Tasks.length <= 0) {
 			task.id = 0;
-		}
-		else{
+		} else {
 			const taskIdArray: number[] = this.Tasks.map((t): number => t.id);
 			task.id = Math.max(...taskIdArray) + 1;
 		}
