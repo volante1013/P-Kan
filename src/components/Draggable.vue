@@ -1,66 +1,68 @@
 <template>
 	<div id="draggable">
-		<draggable class="list-group" group="taskList" animation="150" :list="taskLists">
-			<div v-for="list in taskLists" :key="list.ListId">
-				<div class="header" slot="header">
+		<draggable class="list-group" group="taskList" animation="150" :list="taskMgr.TaskLists">
+			<div v-for="list in taskMgr.TaskLists" :key="list.ListId">
+				<header class="header">
 					<div>{{ list.ListId }}</div>
 					<b-button @click="addList">+</b-button>
-				</div>
+				</header>
 
 				<draggable group="task" animation="150" :list="list.Tasks">
 					<div v-for="task in list.Tasks" :key="task.id" @click="showTask(task)">{{ task.title }}</div>
 				</draggable>
 
-				<b-button slot="footer" @click="addTask(list.ListId)">Add</b-button>
+				<footer class="footer">
+					<b-button @click="addTask(list.ListId)">Add</b-button>
+				</footer>
 			</div>
 		</draggable>
+		<Modal :isActive.sync="isModalActive" v-model="selectedTask" />
 	</div>
 </template>
 
 <script lang="ts">
 	import { Component, Vue } from 'vue-property-decorator';
 	import draggable from 'vuedraggable';
+	import Modal from './Modal.vue';
+	import TaskManager from '../TaskManager';
 	import TaskList from '../TaskList';
 	import Task from '../Task';
 
 	@Component({
 		components: {
 			draggable,
+			Modal,
 		},
 	})
 	export default class Draggable extends Vue {
-		private taskLists: TaskList[] = [];
+		private taskMgr: TaskManager = new TaskManager();
+		private isModalActive: boolean = false;
+		private selectedTask?: Task = new Task('', '');
 
 		private mounted() {
-			const taskList0 = new TaskList(0);
-			taskList0.AddTask(new Task('task0', 'content0'));
-			taskList0.AddTask(new Task('task1', 'content1'));
-			taskList0.AddTask(new Task('task2', 'content2'));
-			taskList0.AddTask(new Task('task3', 'content3'));
-			const taskList1 = new TaskList(1);
-			taskList1.AddTask(new Task('task0', 'content0'));
-			taskList1.AddTask(new Task('task1', 'content1'));
-			taskList1.AddTask(new Task('task2', 'content2'));
-			taskList1.AddTask(new Task('task3', 'content3'));
-			this.taskLists.push(taskList0, taskList1);
+			this.taskMgr.addTaskList();
+			this.taskMgr.addTask(0, new Task('task0', 'content0'));
+			this.taskMgr.addTask(0, new Task('task1', 'content1'));
+			this.taskMgr.addTask(0, new Task('task2', 'content2'));
+			this.taskMgr.addTask(0, new Task('task3', 'content3'));
+			this.taskMgr.addTaskList();
+			this.taskMgr.addTask(1, new Task('task0', 'content0'));
+			this.taskMgr.addTask(1, new Task('task1', 'content1'));
+			this.taskMgr.addTask(1, new Task('task2', 'content2'));
+			this.taskMgr.addTask(1, new Task('task3', 'content3'));
 		}
 
 		private addList(): void {
-			const taskListIdArray: number[] = this.taskLists.map((tl): number => tl.ListId);
-			this.taskLists.push(new TaskList(Math.max(...taskListIdArray) + 1));
+			this.taskMgr.addTaskList();
 		}
 
 		private addTask(listId: number): void {
-			const taskList: TaskList[] = this.taskLists.filter(tl => tl.ListId === listId);
-			if (taskList.length > 1) {
-				console.warn('Same TaskListId is found!', taskList);
-			}
-
-			taskList[0].AddTask(new Task('Untitled', 'Uncontented'));
+			this.taskMgr.addTask(listId);
 		}
 
 		private showTask(task: Task): void {
-			console.log(`${task.title}: ${task.content}`);
+			this.isModalActive = true;
+			this.selectedTask = task;
 		}
 	}
 </script>
