@@ -1,21 +1,40 @@
 <template>
-	<div id="draggable">
-		<draggable class="list-group" group="taskList" animation="150" :list="taskMgr.TaskLists">
-			<div v-for="list in taskMgr.TaskLists" :key="list.ListId">
-				<header class="header">
-					<div>{{ list.ListId }}</div>
-					<b-button @click="addList">+</b-button>
-				</header>
+	<div id="draggable" class="container">
+		<draggable class="columns is-multiline" group="taskList" animation="150" :list="taskMgr.TaskLists">
+			<div class="column is-3" v-for="list in taskMgr.TaskLists" :key="list.ListId">
+				<div class="card">
+					<header class="header is-flex">
+						<p class="title">{{ list.ListId }}</p>
+						<b-button @click="addList">+</b-button>
+					</header>
 
-				<draggable group="task" animation="150" :list="list.Tasks">
-					<div v-for="task in list.Tasks" :key="task.id" @click="showTask(task)">{{ task.title }}</div>
-				</draggable>
+					<draggable class="tile is-parent is-vertical" group="task" animation="150" :list="list.Tasks">
+						<div
+							class="tile is-child box"
+							v-for="task in list.Tasks"
+							:key="task.id"
+							@click="showTask(task)"
+						>
+							<p class="subtitle has-text-left">
+								{{ task.title }}
+							</p>
+							<nav class="level">
+								<b-taglist>
+									<b-tag type="is-info">First</b-tag>
+									<b-tag rounded>First</b-tag>
+									<b-tag type="is-primary">First</b-tag>
+								</b-taglist>
+							</nav>
+						</div>
+					</draggable>
 
-				<footer class="footer">
-					<b-button @click="addTask(list.ListId)">Add</b-button>
-				</footer>
+					<footer>
+						<b-button @click="addTask(list.ListId)">Add</b-button>
+					</footer>
+				</div>
 			</div>
 		</draggable>
+
 		<Modal :isActive.sync="isModalActive" v-model="selectedTask" />
 	</div>
 </template>
@@ -68,9 +87,4 @@
 </script>
 
 <style scoped>
-	.header,
-	.list-group {
-		display: flex;
-		justify-content: center;
-	}
 </style>
